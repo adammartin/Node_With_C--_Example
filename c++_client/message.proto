@@ -1,0 +1,4 @@
+message DataPacket {
+   required int32 id = 1;
+   required string timestamp = 2;
+}
