@@ -1,5 +1,5 @@
-INCPATH = -I/usr/local/lib/boost_1_47_0/boost
-LIBS = -lboost_system -lboost_thread -lpthread
+INCPATH = -I/usr/local/lib/boost_1_47_0/boost 
+LIBS = -lboost_system -lboost_thread -lpthread -lprotobuf
 SOURCES = main.cpp
 
 Client:

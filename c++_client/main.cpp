@@ -3,6 +3,7 @@
 #include <cstring>
 #include <iostream>
 #include <boost/asio.hpp>
+#include "message.pb.h"
 
 using boost::asio::ip::tcp;
 
@@ -16,6 +17,7 @@ int main(int argc, char* argv[])
 {
   try
   {
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
     if (argc != 3)
     {
       std::cerr << "Usage: <App_Name_Here> <host> <port>\n";

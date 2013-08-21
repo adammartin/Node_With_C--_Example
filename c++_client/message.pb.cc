@@ -16,6 +16,8 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 
+namespace example {
+
 namespace {
 
 const ::google::protobuf::Descriptor* DataPacket_descriptor_ = NULL;
@@ -98,8 +100,8 @@ void protobuf_AddDesc_message_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\rmessage.proto\"6\n\nDataPacket\022\n\n\002id\030\001 \002("
-    "\005\032\034\n\007Payload\022\021\n\ttimestamp\030\001 \002(\t", 71);
+    "\n\rmessage.proto\022\007example\"6\n\nDataPacket\022\n"
+    "\n\002id\030\001 \002(\005\032\034\n\007Payload\022\021\n\ttimestamp\030\001 \002(\t", 80);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "message.proto", &protobuf_RegisterTypes);
   DataPacket::default_instance_ = new DataPacket();
@@ -552,5 +554,7 @@ void DataPacket::Swap(DataPacket* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
+
+}  // namespace example
 
 // @@protoc_insertion_point(global_scope)

@@ -1,3 +1,5 @@
+package example;
+
 message DataPacket {
    required int32 id = 1;
    message Payload {

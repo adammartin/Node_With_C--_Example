@@ -26,6 +26,8 @@
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 
+namespace example {
+
 // Internal implementation detail -- do not call these.
 void  protobuf_AddDesc_message_2eproto();
 void protobuf_AssignDesc_message_2eproto();
@@ -102,7 +104,7 @@ class DataPacket_Payload : public ::google::protobuf::Message {
   inline ::std::string* release_timestamp();
   inline void set_allocated_timestamp(::std::string* timestamp);
 
-  // @@protoc_insertion_point(class_scope:DataPacket.Payload)
+  // @@protoc_insertion_point(class_scope:example.DataPacket.Payload)
  private:
   inline void set_has_timestamp();
   inline void clear_has_timestamp();
@@ -186,7 +188,7 @@ class DataPacket : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 id() const;
   inline void set_id(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:DataPacket)
+  // @@protoc_insertion_point(class_scope:example.DataPacket)
  private:
   inline void set_has_id();
   inline void clear_has_id();
@@ -310,6 +312,8 @@ inline void DataPacket::set_id(::google::protobuf::int32 value) {
 
 
 // @@protoc_insertion_point(namespace_scope)
+
+}  // namespace example
 
 #ifndef SWIG
 namespace google {
