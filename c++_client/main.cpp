@@ -17,25 +17,30 @@ std::string make_daytime_string()
 
 void transmit_data(tcp::socket& mySocket) 
 {
-  int messageCount = 0;
-  std::cout << "Please input number of messages to send (enter 0 to quit): \n";
-  std::cin >> messageCount;
-  for(int i = 0; i < messageCount; i++)
+  while(true)
   {
-    example::DataPacket dataPacket;
-    dataPacket.set_id(i+1);
-    dataPacket.add_payload()->set_timestamp(make_daytime_string());
-    dataPacket.add_payload()->set_timestamp(make_daytime_string());
-    dataPacket.add_payload()->set_timestamp(make_daytime_string());
-    dataPacket.add_payload()->set_timestamp(make_daytime_string());
-    dataPacket.add_payload()->set_timestamp(make_daytime_string());
-    dataPacket.add_payload()->set_timestamp(make_daytime_string());
+    int messageCount = 0;
+    std::cout << "Please input number of messages to send (enter 0 to quit): \n";
+    std::cin >> messageCount;
+    if(messageCount == 0) break;
+    std::string timestamp = make_daytime_string();
+    for(int i = 0; i < messageCount; i++)
+    {
+      example::DataPacket dataPacket;
+      dataPacket.set_id(i+1);
+      for(int k = 0; k < 500; k++ )
+      {
+        dataPacket.add_payload()->set_timestamp(timestamp);
+      }
 
-    boost::system::error_code ignored_error;
-    boost::asio::write(mySocket, boost::asio::buffer(dataPacket.SerializeAsString()), boost::asio::transfer_all(), ignored_error);
+      boost::system::error_code ignored_error;
+      std::string asString = dataPacket.SerializeAsString();
+      boost::asio::write(mySocket, boost::asio::buffer(asString, asString.size()), boost::asio::transfer_all(), ignored_error);
+      usleep(20000);
+    }
   }
 
-  usleep(2000); // why do I need a usleep?  GUESS: packet is still processing asynchronously while the method is exiting  
+  // usleep(2000); // why do I need a usleep?  GUESS: packet is still processing asynchronously while the method is exiting  
 }
 
 int main(int argc, char* argv[])

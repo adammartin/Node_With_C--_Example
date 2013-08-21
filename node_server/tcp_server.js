@@ -11,7 +11,8 @@ var server = net.createServer(function(connection) {
   });
 
   connection.addListener("data", function (data) {
-    console.log("Data received from client: " + JSON.stringify(protobuf.Parse(data, "example.DataPacket")));
+    console.log(JSON.stringify(protobuf.Parse(data, "example.DataPacket")));
+    console.log("\n");
   });
 });
 
