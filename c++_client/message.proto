@@ -5,4 +5,5 @@ message DataPacket {
    message Payload {
       required string timestamp = 1;
    }
+   repeated Payload payload = 2;
 }

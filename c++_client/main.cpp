@@ -15,6 +15,7 @@ std::string make_daytime_string()
 
 int main(int argc, char* argv[])
 {
+  int count = 1;
   try
   {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -33,10 +34,17 @@ int main(int argc, char* argv[])
     tcp::socket s(io_service);
     s.connect(*iterator);
 
-    std::string data = "Insert Protobuf data here\n\r";
+    example::DataPacket dataPacket;
+    dataPacket.set_id(count++);
+    dataPacket.add_payload()->set_timestamp(make_daytime_string());
+    dataPacket.add_payload()->set_timestamp(make_daytime_string());
+    dataPacket.add_payload()->set_timestamp(make_daytime_string());
+    dataPacket.add_payload()->set_timestamp(make_daytime_string());
+    dataPacket.add_payload()->set_timestamp(make_daytime_string());
+    dataPacket.add_payload()->set_timestamp(make_daytime_string());
 
     boost::system::error_code ignored_error;
-    boost::asio::write(s, boost::asio::buffer(make_daytime_string()), boost::asio::transfer_all(), ignored_error);
+    boost::asio::write(s, boost::asio::buffer(dataPacket.SerializeAsString()), boost::asio::transfer_all(), ignored_error);
 
     usleep(2000); // why do I need a usleep?
     s.close();
@@ -45,6 +53,8 @@ int main(int argc, char* argv[])
   {
     std::cerr << "Exception: " << e.what() << "\n";
   }
+
+  google::protobuf::ShutdownProtobufLibrary();
 
   return 0;
 }

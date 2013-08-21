@@ -188,6 +188,18 @@ class DataPacket : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 id() const;
   inline void set_id(::google::protobuf::int32 value);
 
+  // repeated .example.DataPacket.Payload payload = 2;
+  inline int payload_size() const;
+  inline void clear_payload();
+  static const int kPayloadFieldNumber = 2;
+  inline const ::example::DataPacket_Payload& payload(int index) const;
+  inline ::example::DataPacket_Payload* mutable_payload(int index);
+  inline ::example::DataPacket_Payload* add_payload();
+  inline const ::google::protobuf::RepeatedPtrField< ::example::DataPacket_Payload >&
+      payload() const;
+  inline ::google::protobuf::RepeatedPtrField< ::example::DataPacket_Payload >*
+      mutable_payload();
+
   // @@protoc_insertion_point(class_scope:example.DataPacket)
  private:
   inline void set_has_id();
@@ -195,10 +207,11 @@ class DataPacket : public ::google::protobuf::Message {
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
+  ::google::protobuf::RepeatedPtrField< ::example::DataPacket_Payload > payload_;
   ::google::protobuf::int32 id_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
 
   friend void  protobuf_AddDesc_message_2eproto();
   friend void protobuf_AssignDesc_message_2eproto();
@@ -308,6 +321,31 @@ inline ::google::protobuf::int32 DataPacket::id() const {
 inline void DataPacket::set_id(::google::protobuf::int32 value) {
   set_has_id();
   id_ = value;
+}
+
+// repeated .example.DataPacket.Payload payload = 2;
+inline int DataPacket::payload_size() const {
+  return payload_.size();
+}
+inline void DataPacket::clear_payload() {
+  payload_.Clear();
+}
+inline const ::example::DataPacket_Payload& DataPacket::payload(int index) const {
+  return payload_.Get(index);
+}
+inline ::example::DataPacket_Payload* DataPacket::mutable_payload(int index) {
+  return payload_.Mutable(index);
+}
+inline ::example::DataPacket_Payload* DataPacket::add_payload() {
+  return payload_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::example::DataPacket_Payload >&
+DataPacket::payload() const {
+  return payload_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::example::DataPacket_Payload >*
+DataPacket::mutable_payload() {
+  return &payload_;
 }
 
 

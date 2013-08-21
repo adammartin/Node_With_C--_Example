@@ -37,8 +37,9 @@ void protobuf_AssignDesc_message_2eproto() {
       "message.proto");
   GOOGLE_CHECK(file != NULL);
   DataPacket_descriptor_ = file->message_type(0);
-  static const int DataPacket_offsets_[1] = {
+  static const int DataPacket_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DataPacket, id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DataPacket, payload_),
   };
   DataPacket_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -100,8 +101,10 @@ void protobuf_AddDesc_message_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\rmessage.proto\022\007example\"6\n\nDataPacket\022\n"
-    "\n\002id\030\001 \002(\005\032\034\n\007Payload\022\021\n\ttimestamp\030\001 \002(\t", 80);
+    "\n\rmessage.proto\022\007example\"d\n\nDataPacket\022\n"
+    "\n\002id\030\001 \002(\005\022,\n\007payload\030\002 \003(\0132\033.example.Da"
+    "taPacket.Payload\032\034\n\007Payload\022\021\n\ttimestamp"
+    "\030\001 \002(\t", 126);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "message.proto", &protobuf_RegisterTypes);
   DataPacket::default_instance_ = new DataPacket();
@@ -348,6 +351,7 @@ void DataPacket_Payload::Swap(DataPacket_Payload* other) {
 
 #ifndef _MSC_VER
 const int DataPacket::kIdFieldNumber;
+const int DataPacket::kPayloadFieldNumber;
 #endif  // !_MSC_VER
 
 DataPacket::DataPacket()
@@ -404,6 +408,7 @@ void DataPacket::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     id_ = 0;
   }
+  payload_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -425,6 +430,21 @@ bool DataPacket::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(18)) goto parse_payload;
+        break;
+      }
+
+      // repeated .example.DataPacket.Payload payload = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_payload:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_payload()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_payload;
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -452,6 +472,12 @@ void DataPacket::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->id(), output);
   }
 
+  // repeated .example.DataPacket.Payload payload = 2;
+  for (int i = 0; i < this->payload_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      2, this->payload(i), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -463,6 +489,13 @@ void DataPacket::SerializeWithCachedSizes(
   // required int32 id = 1;
   if (has_id()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->id(), target);
+  }
+
+  // repeated .example.DataPacket.Payload payload = 2;
+  for (int i = 0; i < this->payload_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        2, this->payload(i), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -484,6 +517,14 @@ int DataPacket::ByteSize() const {
     }
 
   }
+  // repeated .example.DataPacket.Payload payload = 2;
+  total_size += 1 * this->payload_size();
+  for (int i = 0; i < this->payload_size(); i++) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        this->payload(i));
+  }
+
   if (!unknown_fields().empty()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -509,6 +550,7 @@ void DataPacket::MergeFrom(const ::google::protobuf::Message& from) {
 
 void DataPacket::MergeFrom(const DataPacket& from) {
   GOOGLE_CHECK_NE(&from, this);
+  payload_.MergeFrom(from.payload_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_id()) {
       set_id(from.id());
@@ -532,12 +574,16 @@ void DataPacket::CopyFrom(const DataPacket& from) {
 bool DataPacket::IsInitialized() const {
   if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
 
+  for (int i = 0; i < payload_size(); i++) {
+    if (!this->payload(i).IsInitialized()) return false;
+  }
   return true;
 }
 
 void DataPacket::Swap(DataPacket* other) {
   if (other != this) {
     std::swap(id_, other->id_);
+    payload_.Swap(&other->payload_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
