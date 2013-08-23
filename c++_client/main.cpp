@@ -15,7 +15,7 @@ std::string make_daytime_string()
 
 void transmit_data(tcp::socket& mySocket) 
 {
-  const int FIFTY_MILLISECONDS = 50000;
+  boost::system::error_code ignored_error;
   while(true)
   {
     int messageCount = 0;
@@ -32,11 +32,15 @@ void transmit_data(tcp::socket& mySocket)
         dataPacket.add_payload()->set_timestamp(timestamp);
       }
 
-      boost::system::error_code ignored_error;
       std::string asString = dataPacket.SerializeAsString();
       boost::asio::write(mySocket, boost::asio::buffer(asString, asString.size()), boost::asio::transfer_all(), ignored_error);
-      usleep(FIFTY_MILLISECONDS);
+
+      boost::asio::streambuf response;
+      boost::asio::read_until(mySocket, response, "ack");
     }
+
+    std::string complete = "complete";
+    boost::asio::write(mySocket, boost::asio::buffer(complete, complete.size()), boost::asio::transfer_all(), ignored_error);
   }
 }
 
