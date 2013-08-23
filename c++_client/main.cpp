@@ -7,8 +7,6 @@
 
 using boost::asio::ip::tcp;
 
-static int count = 1;
-
 std::string make_daytime_string()
 {
   std::time_t now = std::time(0);
@@ -17,6 +15,7 @@ std::string make_daytime_string()
 
 void transmit_data(tcp::socket& mySocket) 
 {
+  const int FIFTY_MILLISECONDS = 50000;
   while(true)
   {
     int messageCount = 0;
@@ -36,11 +35,9 @@ void transmit_data(tcp::socket& mySocket)
       boost::system::error_code ignored_error;
       std::string asString = dataPacket.SerializeAsString();
       boost::asio::write(mySocket, boost::asio::buffer(asString, asString.size()), boost::asio::transfer_all(), ignored_error);
-      usleep(20000);
+      usleep(FIFTY_MILLISECONDS);
     }
   }
-
-  // usleep(2000); // why do I need a usleep?  GUESS: packet is still processing asynchronously while the method is exiting  
 }
 
 int main(int argc, char* argv[])

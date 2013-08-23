@@ -3,7 +3,9 @@ var fs = require('fs');
 var proto = require('node-protobuf').Protobuf;
 
 var server = net.createServer(function(connection) {
+  var lastMessageId = 0;
   var protobuf = new proto(fs.readFileSync("../c++_client/message.desc"));
+  var lostMessageCount = 0;
 
   console.log('server connected');
   connection.on('end', function() {
@@ -11,8 +13,15 @@ var server = net.createServer(function(connection) {
   });
 
   connection.addListener("data", function (data) {
-    console.log(JSON.stringify(protobuf.Parse(data, "example.DataPacket")));
-    console.log("\n");
+    var dataPacket = protobuf.Parse(data, "example.DataPacket");
+    if(!(dataPacket.id != 0 && lastMessageId == 0) && (dataPacket.id != lastMessageId + 1))
+    {
+      lostMessageCount++;
+    }
+    lastMessageId = dataPacket.id;
+    console.log(JSON.stringify(dataPacket));
+    console.log("\nLostMessageCount: " + lostMessageCount + "\n");
+    console.log("dataPacket.id = " + dataPacket.id + "\n");
   });
 });
 
