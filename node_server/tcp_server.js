@@ -6,6 +6,7 @@ var WebSocketServer = require('websocket').server;
 var http = require('http');
 var tcpServerPort = 8124;
 var httpServerPort = 8080;
+var wsConnection = null;
 
 /**** WebServer Connection Stuff ****/
 
@@ -14,6 +15,7 @@ var myHttpServer = http.createServer(function(request, response) {
     response.writeHead(404);
     response.end();
 });
+
 myHttpServer.listen(httpServerPort, function() {
     console.log((new Date()) + ' Server is listening on port ' + httpServerPort);
 });
@@ -41,20 +43,12 @@ wsServer.on('request', function(request) {
       return;
     }
 
-    var connection = request.accept('echo-protocol', request.origin);
+    wsConnection = request.accept('echo-protocol', request.origin);
     console.log((new Date()) + ' Connection accepted.');
-    connection.on('message', function(message) {
-        if (message.type === 'utf8') {
-            console.log('Received Message: ' + message.utf8Data);
-            connection.sendUTF(message.utf8Data);
-        }
-        else if (message.type === 'binary') {
-            console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
-            connection.sendBytes(message.binaryData);
-        }
-    });
-    connection.on('close', function(reasonCode, description) {
-        console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+
+    wsConnection.on('close', function(reasonCode, description) {
+      console.log((new Date()) + ' Peer ' + wsConnection.remoteAddress + ' disconnected.');
+      wsConnection = null;
     });
 });
 
@@ -77,12 +71,14 @@ var tcpServer = net.createServer(function(socket) {
       return;
     }
     var dataPacket = protobuf.Parse(data, "example.DataPacket");
-    if(!(dataPacket.id != 0 && lastMessageId == 0) && (dataPacket.id != lastMessageId + 1))
-    {
+    if(!(dataPacket.id != 0 && lastMessageId == 0) && (dataPacket.id != lastMessageId + 1)) {
       lostMessageCount += dataPacket.id - lastMessageId;
     }
     lastMessageId = dataPacket.id;
-    console.log(JSON.stringify(dataPacket));
+    if(wsConnection != null) {
+      wsConnection.sendUTF(JSON.stringify(dataPacket));
+    }
+    // console.log(JSON.stringify(dataPacket));
     console.log("\nLostMessageCount: " + lostMessageCount + "\n");
     console.log("dataPacket.id = " + dataPacket.id + "\n");
 
