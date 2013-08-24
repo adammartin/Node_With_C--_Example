@@ -4,7 +4,7 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
   var field = "div#field_name";
-  function WebSocketTest()
+  function WebSocketReader()
   {
     if ("WebSocket" in window)
     {
@@ -15,7 +15,7 @@
        };
        ws.onmessage = function (evt) 
        { 
-          var received_msg = evt.data;
+          var received_msg = JSON.parse(evt.data);
           $(field).text(evt.data);
        };
        ws.onclose = function()
@@ -35,8 +35,8 @@
     <div id="field_name">TEXT GOES HERE</div>
   </div>
   <script>
-    $( document ).ready(function() {
-        WebSocketTest();
+    $(document).ready(function() {
+        WebSocketReader();
     });
   </script>
 </body>
