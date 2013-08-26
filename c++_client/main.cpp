@@ -9,6 +9,10 @@
 
 using boost::asio::ip::tcp;
 
+const static std::string MACHINE_SERIAL_NUMBER = "123456789";
+const static double LATITUDE = 41.600397;
+const static double LONGITUDE = -93.608982;
+
 std::string make_daytime_string()
 {
   std::time_t now = std::time(0);
@@ -27,10 +31,11 @@ std::string SerializeDataAsString(int id, std::string& timestamp)
   return dataPacket.SerializeAsString();
 }
 
-std::string SerializeModelAsString(int id, std::string& timestamp)
+std::string SerializeModelAsString(int originalId, std::string& timestamp)
 {
+  int id = originalId++; 
   EqModel::ProtoEquipmentModel model;
-  model.set_key(boost::lexical_cast<std::string>(id));
+  model.set_key(boost::lexical_cast<std::string>(id++));
 
   EqModel::ProtoFrame* frame = model.add_frames();
   frame->set_key("tractor_key");
@@ -38,6 +43,23 @@ std::string SerializeModelAsString(int id, std::string& timestamp)
   frame->set_releasedate(std::time(0));
   frame->set_lastmodifieddate(std::time(0));
   frame->set_frametype(::EqModel::FT_MACHINE);
+  frame->set_receiverid(id++);
+  frame->set_frontoffset(0.0011);
+  frame->set_turnradius(0.0012);
+  frame->set_turnsensitivity(0.0013);
+  frame->set_allocated_serialnumber(new std::string(MACHINE_SERIAL_NUMBER));
+  frame->set_wheelbaseamount(0.0014);
+  frame->set_allocated_configurationglobalid(new std::string(MACHINE_SERIAL_NUMBER));
+  frame->set_allocated_model(new std::string("FT4"));
+  frame->set_allocated_gps(new std::string(boost::lexical_cast<std::string>(LATITUDE)
+    + ", " + boost::lexical_cast<std::string>(LONGITUDE)));
+
+  // EqModel::EqModel::Offset offsets;
+  // frame->set_allocated_receiveroffset(&offsets);
+
+  // EqModel::EAxleLocation axle;
+  // frame->set_nonsteeringaxle(axle);
+
 
   return model.SerializeAsString();
 }

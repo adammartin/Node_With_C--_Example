@@ -75,16 +75,16 @@ var tcpServer = net.createServer(function(socket) {
       return;
     }
     var dataPacket = protobuf.Parse(data, "EqModel.ProtoEquipmentModel");
-    if(!(dataPacket.key != 0 && lastMessageId == 0) && (dataPacket.key != lastMessageId + 1)) {
-      lostMessageCount += dataPacket.key - lastMessageId;
+    var packetId = parseInt(dataPacket.Key, 10);
+    if(!(packetId != 0 && lastMessageId == 0) && (packetId != lastMessageId + 1)) {
+      lostMessageCount += packetId - lastMessageId;
     }
-    lastMessageId = dataPacket.key;
+    lastMessageId = packetId;
     if(wsConnection != null) {
       wsConnection.sendUTF(JSON.stringify(dataPacket));
     }
-    // console.log(JSON.stringify(dataPacket));
     console.log("\nLostMessageCount: " + lostMessageCount + "\n");
-    console.log("dataPacket.id = " + dataPacket.key + "\n");
+    console.log("dataPacket.id = " + packetId + "\n");
 
     socket.write("ack");
   });
