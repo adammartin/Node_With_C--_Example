@@ -1,43 +1,69 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script type="text/javascript">
-  var field = "div#field_name";
-  function WebSocketReader()
-  {
-    if ("WebSocket" in window)
-    {
-       var ws = new WebSocket("ws://localhost:8080", "echo-protocol");
-       ws.onopen = function()
-       {
-          $(field).text("Connection opened.");
-       };
-       ws.onmessage = function (evt) 
-       { 
-          var received_msg = JSON.parse(evt.data);
-          $(field).text(evt.data);
-       };
-       ws.onclose = function()
-       { 
-          $(field).text("Connection closed.");
-       };
-    }
-    else
-    {
-       $(field).text("WebSocket NOT supported by your Browser!");
-    }
-  }
-</script>
-</head>
-<body>
-  <div id="panel">
-    <div id="field_name">TEXT GOES HERE</div>
-  </div>
-  <script>
-    $(document).ready(function() {
-        WebSocketReader();
-    });
-  </script>
-</body>
+  <head>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript">
+      var field = "div#field_name";
+
+      function WebSocketReader(map)
+      {
+        var polyline = L.polyline([]).addTo(map);
+        if ("WebSocket" in window)
+        {
+           var ws = new WebSocket("ws://localhost:8080", "echo-protocol");
+           ws.onopen = function()
+           {
+              $(field).text("Connection opened.");
+           };
+           ws.onmessage = function (evt) 
+           { 
+              var received_msg = JSON.parse(evt.data);
+              $(field).text(evt.data);
+              var gps = received_msg.Frames[0].GPS.split(', ');
+              polyline.addLatLng([parseFloat(gps[0]), parseFloat(gps[1])]).addTo(map);
+              polyline.redraw();
+           };
+           ws.onclose = function()
+           { 
+              $(field).text("Connection closed.");
+           };
+        }
+        else
+        {
+           $(field).text("WebSocket NOT supported by your Browser!");
+        }
+      }
+
+      function intializeMap() {
+          var map = L.map('map').setView([41.600397, -93.608982], 16);
+          var mapnik = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
+          // var polygon = L.polygon([
+          //     [41.600397, -93.608982],
+          //     [41.600, -93.609],
+          //     [41.6005, -93.604]
+          // ]).addTo(map);
+          return map;
+      }
+    </script>
+    <style type="text/css">
+      #map { height: 600px; width: 800px;}
+    </style>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <!--[if lte IE 8]>
+      <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+    <![endif]-->
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="panel">
+      <div id="field_name">TEXT GOES HERE</div>
+    </div>
+    <script>
+      $(document).ready(function() {
+          var map = intializeMap();
+          WebSocketReader(map);
+      });
+    </script>
+  </body>
 </html>
