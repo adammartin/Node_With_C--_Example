@@ -32,6 +32,13 @@ std::string SerializeModelAsString(int id, std::string& timestamp)
   EqModel::ProtoEquipmentModel model;
   model.set_key(boost::lexical_cast<std::string>(id));
 
+  EqModel::ProtoFrame* frame = model.add_frames();
+  frame->set_key("tractor_key");
+  frame->set_description("A sample tractor example");
+  frame->set_releasedate(std::time(0));
+  frame->set_lastmodifieddate(std::time(0));
+  frame->set_frametype(::EqModel::EFrameType::FT_MACHINE)
+
   return model.SerializeAsString();
 }
 
