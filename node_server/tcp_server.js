@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+
+/*
+* Need to look into BSON for encoding the message structure to the client.
+*/
 var net = require('net');
 var fs = require('fs');
 var proto = require('node-protobuf').Protobuf;
