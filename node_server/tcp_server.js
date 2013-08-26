@@ -61,7 +61,7 @@ wsServer.on('request', function(request) {
 var tcpServer = net.createServer(function(socket) {
   var lastMessageId = 0;
   var lostMessageCount = 0;
-  var protobuf = new proto(fs.readFileSync("../c++_client/message.desc"));
+  var protobuf = new proto(fs.readFileSync("../c++_client/ProtoEqModel.desc"));
 
   console.log('server connected');
   socket.on('end', function() {
@@ -74,17 +74,17 @@ var tcpServer = net.createServer(function(socket) {
       lastMessageId = 0;
       return;
     }
-    var dataPacket = protobuf.Parse(data, "example.DataPacket");
-    if(!(dataPacket.id != 0 && lastMessageId == 0) && (dataPacket.id != lastMessageId + 1)) {
-      lostMessageCount += dataPacket.id - lastMessageId;
+    var dataPacket = protobuf.Parse(data, "EqModel.ProtoEquipmentModel");
+    if(!(dataPacket.key != 0 && lastMessageId == 0) && (dataPacket.key != lastMessageId + 1)) {
+      lostMessageCount += dataPacket.key - lastMessageId;
     }
-    lastMessageId = dataPacket.id;
+    lastMessageId = dataPacket.key;
     if(wsConnection != null) {
       wsConnection.sendUTF(JSON.stringify(dataPacket));
     }
     // console.log(JSON.stringify(dataPacket));
     console.log("\nLostMessageCount: " + lostMessageCount + "\n");
-    console.log("dataPacket.id = " + dataPacket.id + "\n");
+    console.log("dataPacket.id = " + dataPacket.key + "\n");
 
     socket.write("ack");
   });

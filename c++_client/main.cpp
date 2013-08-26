@@ -37,7 +37,7 @@ std::string SerializeModelAsString(int id, std::string& timestamp)
   frame->set_description("A sample tractor example");
   frame->set_releasedate(std::time(0));
   frame->set_lastmodifieddate(std::time(0));
-  frame->set_frametype(::EqModel::EFrameType::FT_MACHINE)
+  frame->set_frametype(::EqModel::FT_MACHINE);
 
   return model.SerializeAsString();
 }
@@ -54,7 +54,7 @@ void transmit_data(tcp::socket& mySocket)
     std::string timestamp = make_daytime_string();
     for(int i = 0; i < messageCount; i++)
     {
-      std::string asString = SerializeDataAsString(i, timestamp);
+      std::string asString = SerializeModelAsString(i, timestamp);
       boost::asio::write(mySocket, boost::asio::buffer(asString, asString.size()), boost::asio::transfer_all(), ignored_error);
 
       boost::asio::streambuf response;
