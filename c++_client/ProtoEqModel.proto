@@ -1,0 +1,211 @@
+package EqModel;
+
+enum EFrameType
+{
+   FT_UNDEFINED = 0;
+   FT_MACHINE = 1;
+   FT_IMPLEMENT = 2;
+}
+
+enum EWorkingFunctionType
+{
+   WF_UNDEFINED = 0;
+   WF_LOCOMOTION = 1;
+   WF_HARVEST = 2;
+   WF_PRODUCT_APPLICATION = 3;
+   WF_PLANTING = 4;
+   WF_TILLING = 5;
+}
+
+enum EViewType
+{
+   VT_UNDEFINED = 0;
+   VT_MASTER = 1;
+   VT_METER = 2;
+   VT_SECTION = 3;
+   VT_ROW = 4;
+}
+
+enum EAxleLocation
+{
+   AL_UNDEFINED = 0;
+   AL_FRONT_AXLE = 1;
+   AL_REAR_AXLE = 2;
+}
+
+enum EEquipmentType
+{
+   ET_UNDEFINED = 0;
+   ET_TRACTOR = 1;
+   ET_COMBINE = 2;
+   ET_SPRAYER = 3;
+   ET_SPREADER = 4;
+   ET_SEEDER = 5;
+   ET_OTHER = 6;
+}
+
+enum ERecordingSource
+{
+   RS_UNDEFINED = 0;
+   RS_MANUAL = 1;
+   RS_AUTO = 2;
+   RS_PTO = 3;
+   RS_ACCUDEPTH = 4;
+   RS_HITCH = 5;
+   RS_SCV1 = 6;
+   RS_SCV2 = 7;
+   RS_SCV3 = 8;
+   RS_SCV4 = 9;
+   RS_SCV5 = 10;
+   RS_SCV6 = 11;
+   RS_SCV7 = 12;
+   RS_SCV8 = 13;
+   RS_SCV9 = 14;
+   RS_SCV10 = 15;
+   RS_SCV11 = 16;
+   RS_SCV12 = 17;
+   RS_SCV13 = 18;
+   RS_IMPLEMENT_SWITCH = 19; 
+}
+
+enum EConnectionPosition
+{
+   CP_UNDEFINED = 0;
+   CP_FRONT = 1;
+   CP_REAR = 2;
+}
+
+enum EHitchType
+{
+    HT_UNDEFINED = 0;
+    HT_TRACTOR_DRAWBAR = 1;
+    HT_THREE_POINT_HITCH_SEMI_MOUNTED = 2;
+    HT_THREE_POINT_HITCH_MOUNTED = 3;
+    HT_HITCH_HOOK = 4;
+    HT_CLEVIS_COUPLING = 5;
+    HT_PITON_TYPE_COUPLING = 6;
+    HT_CUNA_HITCH = 7;
+    HT_BALL_HITCH = 8;
+    HT_THREE_POINT_HITCH_MOUNTED_FRONT = 9;
+};
+
+message Offset
+{
+   required double Inline = 1;
+   optional double Lateral = 2;
+   optional double Height = 3;
+}
+
+message ProtoConnection
+{
+   required Offset ConnectionOffset = 1;
+   optional EConnectionPosition ConnectionPosition = 2 [ default = CP_UNDEFINED ];
+   optional EHitchType HitchType = 3 [default = HT_UNDEFINED];
+}
+
+message ProtoConnectionRelationship
+{
+   required int32 SourceFrameIndex = 1;
+   optional int32 SourceConnectionIndex = 2;
+   optional int32 TargetFrameIndex = 3;
+   optional int32 TargetConnectionIndex = 4;
+}
+
+
+message ProtoRank
+{
+	required uint32 RankID = 1;
+   required double Width = 2;
+   optional Offset LocalCenter = 3;
+   repeated sint32 ChildElementIndex = 4;
+}
+
+message ProtoWorkingElement
+{
+   required double Width = 1;
+   optional Offset CenterOffset = 2;
+   optional uint32 ElementID = 3;
+   optional EViewType ViewType = 4 [ default = VT_UNDEFINED ];
+   optional double Left = 5;
+   optional double Right = 6;
+   optional double Size = 7;
+   optional sint32 ParentElementIndex = 8;
+   repeated sint32 WorkingStateIndex = 9;
+   repeated sint32 ChildElementIndex = 10;
+   repeated sint32 WorkingDataIndex = 11;	
+}
+
+message ProtoWorkingData
+{
+   required uint32 DataId = 1;
+   optional uint32 Ddi = 2;
+   optional uint32 DomainId = 3;
+   optional bool Controllable = 4;
+	optional sint32 Offset = 5;
+   optional double ScaleFactor = 6;
+   optional string NativeUnitOfMeasure = 7;
+}
+
+message ProtoWorkingState
+{
+   required uint32 Id = 1;
+   optional uint32 Ddi = 2;
+   optional uint32 DomainId = 3;
+   optional bool Controllable = 4;
+   optional EViewType ViewType = 5 [ default = VT_UNDEFINED ];
+   optional sint32 ParentIndex = 6;
+}
+
+message ProtoWorkingFunction
+{
+   required string Key = 1;
+   optional string Description = 2;
+   optional EWorkingFunctionType WorkingFunctionType = 3  [ default = WF_UNDEFINED ];
+   repeated ProtoRank Ranks = 4;
+   repeated ProtoWorkingElement Elements = 5;
+   repeated ProtoWorkingData Data = 6;
+   repeated ProtoWorkingState States = 7;
+}
+
+message ProtoFrame
+{
+   required string Key = 1;
+   optional string Description = 2;
+   optional string OutOfBoxName = 3;
+   optional uint32 ReleaseDate = 4;
+   optional uint32 LastModifiedDate = 5;
+   optional EFrameType FrameType = 6 [ default = FT_UNDEFINED ];
+   optional EEquipmentType EquipmentType = 7 [ default = ET_UNDEFINED ];
+   optional string Comments = 8;
+   optional uint32 ReceiverID = 9;
+   optional Offset ReceiverOffset = 10;
+   optional Offset DropPoint = 11;
+   optional double FrontOffset = 12;
+   optional double ImplementLength = 13;
+   optional EAxleLocation NonSteeringAxle = 14 [ default = AL_UNDEFINED ];
+   optional double TurnRadius = 15;
+   optional double TurnSensitivity = 16;
+   optional string SerialNumber = 17;
+   optional double PhysicalWidth = 18;
+   optional double PhysicalLength = 19;
+   optional double ImplementWidth = 20;
+   optional double RowWidth = 21;
+   optional uint32 RowCount = 22;
+   optional bool InRowConfiguration = 23;
+   optional double TrackSpacing = 24;
+   optional double WheelBaseAmount = 25;
+   optional uint32 FrameId = 26;
+   optional string ConfigurationGlobalID = 27;
+   optional string Model = 28;
+   optional string GPS = 29;
+   repeated ProtoConnection Connections = 30;
+   repeated ProtoWorkingFunction WorkingFunctions = 31;
+}
+
+message ProtoEquipmentModel
+{
+   required string Key = 1;
+   optional int32 LeadFrameIndex = 2;
+   repeated ProtoFrame Frames = 3;
+   repeated ProtoConnectionRelationship ConnectionRelationships = 4;
+}
