@@ -3,7 +3,9 @@
 #include <cstring>
 #include <iostream>
 #include <boost/asio.hpp>
+#include <boost/lexical_cast.hpp>
 #include "message.pb.h"
+#include "ProtoEqModel.pb.h"
 
 using boost::asio::ip::tcp;
 
@@ -11,6 +13,26 @@ std::string make_daytime_string()
 {
   std::time_t now = std::time(0);
   return std::ctime(&now);
+}
+
+std::string SerializeDataAsString(int id, std::string& timestamp)
+{
+  example::DataPacket dataPacket;
+  dataPacket.set_id(id+1);
+  for(int k = 0; k < 500; k++ )
+  {
+    dataPacket.add_payload()->set_timestamp(timestamp);
+  }
+
+  return dataPacket.SerializeAsString();
+}
+
+std::string SerializeModelAsString(int id, std::string& timestamp)
+{
+  EqModel::ProtoEquipmentModel model;
+  model.set_key(boost::lexical_cast<std::string>(id));
+
+  return model.SerializeAsString();
 }
 
 void transmit_data(tcp::socket& mySocket) 
@@ -25,14 +47,7 @@ void transmit_data(tcp::socket& mySocket)
     std::string timestamp = make_daytime_string();
     for(int i = 0; i < messageCount; i++)
     {
-      example::DataPacket dataPacket;
-      dataPacket.set_id(i+1);
-      for(int k = 0; k < 500; k++ )
-      {
-        dataPacket.add_payload()->set_timestamp(timestamp);
-      }
-
-      std::string asString = dataPacket.SerializeAsString();
+      std::string asString = SerializeDataAsString(i, timestamp);
       boost::asio::write(mySocket, boost::asio::buffer(asString, asString.size()), boost::asio::transfer_all(), ignored_error);
 
       boost::asio::streambuf response;
