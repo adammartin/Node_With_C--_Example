@@ -13,25 +13,7 @@ const static std::string MACHINE_SERIAL_NUMBER = "123456789";
 const static double LATITUDE = 41.600397;
 const static double LONGITUDE = -93.608982;
 
-std::string make_daytime_string()
-{
-  std::time_t now = std::time(0);
-  return std::ctime(&now);
-}
-
-std::string SerializeDataAsString(int id, std::string& timestamp)
-{
-  example::DataPacket dataPacket;
-  dataPacket.set_id(id+1);
-  for(int k = 0; k < 500; k++ )
-  {
-    dataPacket.add_payload()->set_timestamp(timestamp);
-  }
-
-  return dataPacket.SerializeAsString();
-}
-
-std::string SerializeModelAsString(int originalId, std::string& timestamp)
+std::string SerializeModelAsString(int originalId)
 {
   int id = originalId; 
   EqModel::ProtoEquipmentModel model;
@@ -83,10 +65,10 @@ void transmit_data(tcp::socket& mySocket)
     std::cout << "Please input number of messages to send (enter 0 to quit): \n";
     std::cin >> messageCount;
     if(messageCount == 0) break;
-    std::string timestamp = make_daytime_string();
+
     for(int i = 0; i < messageCount; i++)
     {
-      std::string asString = SerializeModelAsString(i, timestamp);
+      std::string asString = SerializeModelAsString(i);
       boost::asio::write(mySocket, boost::asio::buffer(asString, asString.size()), boost::asio::transfer_all(), ignored_error);
 
       boost::asio::streambuf response;
