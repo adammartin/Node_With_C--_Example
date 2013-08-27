@@ -2,8 +2,10 @@
 <html>
   <head>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.0/underscore-min.js"></script>
     <script type="text/javascript">
       var field = "div#field_name";
+      var redraw = _.throttle(polyline.redraw(), 200);
 
       function WebSocketReader(map)
       {
@@ -19,9 +21,11 @@
            { 
               var received_msg = JSON.parse(evt.data);
               $(field).text(evt.data);
-              var gps = received_msg.Frames[0].GPS.split(', ');
-              polyline.addLatLng([parseFloat(gps[0]), parseFloat(gps[1])]).addTo(map);
-              polyline.redraw();
+              if(parseInt(received_msg.Key, 10) % 100 == 0){
+                var gps = received_msg.Frames[0].GPS.split(', ');
+                polyline.addLatLng([parseFloat(gps[0]), parseFloat(gps[1])]).addTo(map);
+                redraw();
+              }
            };
            ws.onclose = function()
            { 
