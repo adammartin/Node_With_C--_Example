@@ -41,11 +41,6 @@
       function intializeMap() {
           var map = L.map('map').setView([41.600397, -93.608982], 16);
           var mapnik = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
-          // var polygon = L.polygon([
-          //     [41.600397, -93.608982],
-          //     [41.600, -93.609],
-          //     [41.6005, -93.604]
-          // ]).addTo(map);
           return map;
       }
     </script>
