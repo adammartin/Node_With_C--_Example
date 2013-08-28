@@ -24,6 +24,8 @@
               if(parseInt(received_msg.Key, 10) % 100 == 0){
                 var gps = received_msg.Frames[0].GPS.split(', ');
                 polyline.addLatLng([parseFloat(gps[0]), parseFloat(gps[1])]).addTo(map);
+                if(parseInt(received_msg.Key, 10) % 700 == 0)
+                  map.setView([parseFloat(gps[0]), parseFloat(gps[1])], 16);
                 redraw();
               }
            };
@@ -39,7 +41,7 @@
       }
 
       function intializeMap() {
-          var map = L.map('map').setView([41.600397, -93.608982], 16);
+          var map = L.map('map').setView([41.600397, -93.608982], 10);
           var mapnik = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
           return map;
       }

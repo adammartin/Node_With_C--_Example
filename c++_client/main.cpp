@@ -44,7 +44,7 @@ std::string SerializeModelAsString(int originalId)
   frame->set_allocated_configurationglobalid(new std::string(MACHINE_SERIAL_NUMBER));
   frame->set_allocated_model(new std::string("FT4"));
   frame->set_allocated_gps(new std::string(boost::lexical_cast<std::string>(LATITUDE+(0.000001*id))
-    + ", " + boost::lexical_cast<std::string>(LONGITUDE)));
+    + ", " + boost::lexical_cast<std::string>(LONGITUDE+(0.00000025*id))));
   frame->set_allocated_receiveroffset(offsets);
   frame->set_nonsteeringaxle(EqModel::AL_REAR_AXLE);
 
