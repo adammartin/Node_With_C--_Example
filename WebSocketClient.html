@@ -20,7 +20,7 @@
            ws.onmessage = function (evt) 
            { 
               var received_msg = JSON.parse(evt.data);
-              $(field).text(evt.data);
+              $(field).text(JSON.stringify(received_msg, null, '\t'));
               if(parseInt(received_msg.Key, 10) % 100 == 0){
                 var gps = received_msg.Frames[0].GPS.split(', ');
                 polyline.addLatLng([parseFloat(gps[0]), parseFloat(gps[1])]).addTo(map);
@@ -47,6 +47,7 @@
     <style type="text/css">
       #map { height: 600px; width: 800px;}
     </style>
+    <link rel="stylesheet" type="text/css" href="css/simple.css"/>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <!--[if lte IE 8]>
       <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
@@ -54,7 +55,9 @@
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
   </head>
   <body>
+    <br><br>
     <div id="map"></div>
+    <br><br><br>
     <div id="panel">
       <div id="field_name">TEXT GOES HERE</div>
     </div>

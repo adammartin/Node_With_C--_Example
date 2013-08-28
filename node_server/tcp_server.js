@@ -62,6 +62,7 @@ var tcpServer = net.createServer(function(socket) {
   var lastMessageId = 0;
   var lostMessageCount = 0;
   var protobuf = new proto(fs.readFileSync("../c++_client/ProtoEqModel.desc"));
+  var startTime = null;
 
   console.log('server connected');
   socket.on('end', function() {
@@ -70,9 +71,16 @@ var tcpServer = net.createServer(function(socket) {
 
   socket.addListener("data", function (data) {
     if(data.length == 8) {
-      console.log("Message chain complete resetting last messageId.");
+      var duration = Date.now() - startTime;
+      console.log("\nLostMessageCount: " + lostMessageCount);
+      console.log("Message chain complete resetting last messageId.  Processed " + lastMessageId 
+        + " in " + duration + " ms.\n This is a rate of approximately " + (lastMessageId/duration).toFixed(2) + " m/ms");
       lastMessageId = 0;
+      startTime = null;
       return;
+    }
+    if(startTime == null) {
+      startTime = Date.now();
     }
     var dataPacket = protobuf.Parse(data, "EqModel.ProtoEquipmentModel");
     var packetId = parseInt(dataPacket.Key, 10);
@@ -83,8 +91,6 @@ var tcpServer = net.createServer(function(socket) {
     if(wsConnection != null) {
       wsConnection.sendUTF(JSON.stringify(dataPacket));
     }
-    console.log("\nLostMessageCount: " + lostMessageCount + "\n");
-    console.log("dataPacket.id = " + packetId + "\n");
 
     socket.write("ack");
   });
