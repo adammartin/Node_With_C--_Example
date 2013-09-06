@@ -21,11 +21,13 @@
            { 
               var received_msg = JSON.parse(evt.data);
               $(field).text(JSON.stringify(received_msg, null, '\t'));
-              if(parseInt(received_msg.Key, 10) % 100 == 0){
+              if(parseInt(received_msg.Key, 10) % 120 == 0){
                 var gps = received_msg.Frames[0].GPS.split(', ');
-                polyline.addLatLng([parseFloat(gps[0]), parseFloat(gps[1])]).addTo(map);
-                if(parseInt(received_msg.Key, 10) % 700 == 0)
-                  map.setView([parseFloat(gps[0]), parseFloat(gps[1])], 16);
+                var gpsX = parseFloat(gps[0]);
+                var gpsY = parseFloat(gps[1]);
+                polyline.addLatLng([gpsX, gpsY]).addTo(map);
+                if(parseInt(received_msg.Key, 10) % 500 == 0)
+                  map.setView([gpsX, gpsY], 16);
                 redraw();
               }
            };
