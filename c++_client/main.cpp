@@ -4,7 +4,6 @@
 #include <iostream>
 #include <boost/asio.hpp>
 #include <boost/lexical_cast.hpp>
-#include "message.pb.h"
 #include "ProtoEqModel.pb.h"
 
 using boost::asio::ip::tcp;
